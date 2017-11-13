@@ -57,6 +57,12 @@ public interface JobExecutionDao {
 	List<JobExecution> findJobExecutions(JobInstance jobInstance);
 
 	/**
+	 * Return all {@link JobExecution} for given {@link JobInstance}, sorted
+	 * backwards by creation order (so the first element is the most recent).
+	 */
+	List<JobExecution> findJobExecutions(JobInstance jobInstance, int start, int count);
+
+	/**
 	 * Find the last {@link JobExecution} to have been created for a given
 	 * {@link JobInstance}.
 	 * @param jobInstance the {@link JobInstance}

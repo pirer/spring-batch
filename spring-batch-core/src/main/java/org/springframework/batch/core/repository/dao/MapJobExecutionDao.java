@@ -16,6 +16,12 @@
 
 package org.springframework.batch.core.repository.dao;
 
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobInstance;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.util.Assert;
+import org.springframework.util.SerializationUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -25,12 +31,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
-
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobInstance;
-import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.util.Assert;
-import org.springframework.util.SerializationUtils;
 
 /**
  * In-memory implementation of {@link JobExecutionDao}.
@@ -85,6 +85,36 @@ public class MapJobExecutionDao implements JobExecutionDao {
 			}
 		});
 		return executions;
+	}
+
+	@Override
+	public List<JobExecution> findJobExecutions(JobInstance jobInstance, int start, int count) {
+			List<JobExecution> result = new ArrayList<JobExecution>();
+			for (JobExecution exec : executionsById.values()) {
+				if (exec.getJobInstance().equals(jobInstance)) {
+					result.add(copy(exec));
+				}
+			}
+
+			sortDescending(result);
+
+			return subset(result, start, count);
+	}
+
+	private List<JobExecution> subset(List<JobExecution> jobExecutions, int start, int count) {
+		int startIndex = Math.min(start, jobExecutions.size());
+		int endIndex = Math.min(start + count, jobExecutions.size());
+
+		return jobExecutions.subList(startIndex, endIndex);
+	}
+
+	private void sortDescending(List<JobExecution> result) {
+		Collections.sort(result, new Comparator<JobExecution>() {
+			@Override
+			public int compare(JobExecution o1, JobExecution o2) {
+				return Long.signum(o2.getId() - o1.getId());
+			}
+		});
 	}
 
 	@Override

@@ -88,6 +88,18 @@ public class SimpleJobExplorer implements JobExplorer {
 		return executions;
 	}
 
+	@Override
+	public List<JobExecution> getJobExecutions(JobInstance jobInstance, int start, int count) {
+		List<JobExecution> executions = jobExecutionDao.findJobExecutions(jobInstance,start,count);
+		for (JobExecution jobExecution : executions) {
+			getJobExecutionDependencies(jobExecution);
+			for (StepExecution stepExecution : jobExecution.getStepExecutions()) {
+				getStepExecutionDependencies(stepExecution);
+			}
+		}
+		return executions;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 *
