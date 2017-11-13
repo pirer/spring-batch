@@ -59,6 +59,8 @@ public interface JobExplorer {
 	 */
 	JobExecution getJobExecution(Long executionId);
 
+
+
 	/**
 	 * Retrieve a {@link StepExecution} by its id and parent
 	 * {@link JobExecution} id. The execution context for the step should be
@@ -89,6 +91,21 @@ public interface JobExplorer {
 	 * @return the set of all executions for the specified {@link JobInstance}
 	 */
 	List<JobExecution> getJobExecutions(JobInstance jobInstance);
+
+	/**
+	 * Retrieve job executions by their job instance. The corresponding step
+	 * executions may not be fully hydrated (e.g. their execution context may be
+	 * missing), depending on the implementation. Use
+	 * {@link #getStepExecution(Long, Long)} to hydrate them in that case.
+	 *
+	 * @param jobInstance the {@link JobInstance} to query
+	 * @param start the start index of the instances to return
+	 * @param count the maximum number of instances to return
+	 * @return the {@link JobExecution} values up to a maximum of count values
+	 *
+	 */
+	List<JobExecution> getJobExecutions(JobInstance jobInstance,int start, int count);
+
 
 	/**
 	 * Retrieve running job executions. The corresponding step executions may

@@ -20,12 +20,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,8 +34,10 @@ import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameter.ParameterType;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.incrementer.DataFieldMaxValueIncrementer;
@@ -129,6 +127,36 @@ public class JdbcJobExecutionDao extends AbstractJdbcBatchMetadataDao implements
 		Assert.notNull(job.getId(), "Job Id cannot be null.");
 
 		return getJdbcTemplate().query(getQuery(FIND_JOB_EXECUTIONS), new JobExecutionRowMapper(job), job.getId());
+	}
+
+	@Override
+	public List<JobExecution> findJobExecutions(final JobInstance jobInstance, final int start, final int count) {
+		Assert.notNull(jobInstance, "JobInstance cannot be null.");
+		Assert.notNull(jobInstance.getId(), "JobInstance Id cannot be null.");
+
+		ResultSetExtractor<List<JobExecution>> extractor = new ResultSetExtractor<List<JobExecution>>() {
+
+			private List<JobExecution> list = new ArrayList<JobExecution>();
+
+			@Override
+			public List<JobExecution> extractData(ResultSet rs) throws SQLException,
+					DataAccessException {
+				int rowNum = 0;
+				while (rowNum < start && rs.next()) {
+					rowNum++;
+				}
+				while (rowNum < start + count && rs.next()) {
+					RowMapper<JobExecution> rowMapper = new JobExecutionRowMapper(jobInstance);
+					list.add(rowMapper.mapRow(rs, rowNum));
+					rowNum++;
+				}
+				return list;
+			}
+
+		};
+
+		return getJdbcTemplate().query(getQuery(FIND_JOB_EXECUTIONS),
+				new Object[] { jobInstance.getId() }, extractor);
 	}
 
 	/**
