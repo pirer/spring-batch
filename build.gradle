@@ -118,6 +118,8 @@ configure(subprojects - project(":spring-build-src")) { subproject ->
 	apply plugin: 'merge'
 	apply plugin: 'net.researchgate.release'
 
+    version="${version}"
+
 	jacoco {
 		toolVersion = "0.7.0.201403182114"
 	}
