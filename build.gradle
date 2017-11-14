@@ -97,6 +97,8 @@ allprojects {
 		beanshellVersion = '2.0b5'
 	}
 
+    version = "${version}"
+
     apply plugin: 'net.researchgate.release'
 
     release {
