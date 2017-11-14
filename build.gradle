@@ -12,6 +12,7 @@ buildscript {
 		classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
 		classpath 'io.spring.gradle:spring-io-plugin:0.0.5.RELEASE'
 		classpath "io.spring.gradle:dependency-management-plugin:0.5.1.RELEASE"
+		classpath "net.researchgate:gradle-release:2.4.0"
 	}
 }
 
@@ -105,6 +106,7 @@ configure(subprojects - project(":spring-build-src")) { subproject ->
 	apply plugin: 'propdeps-idea'
 	apply plugin: 'propdeps-eclipse'
 	apply plugin: 'merge'
+	apply plugin: 'net.researchgate.release'
 
 	jacoco {
 		toolVersion = "0.7.0.201403182114"
@@ -209,6 +211,11 @@ configure(subprojects - project(":spring-build-src")) { subproject ->
 		archives sourcesJar
 		archives javadocJar
 	}
+    release {
+        git {
+            requireBranch = ''
+        }
+    }
 }
 
 configure(mainProjects) {
