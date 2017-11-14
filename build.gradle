@@ -96,6 +96,14 @@ allprojects {
 		jrubyVersion = '1.7.22'
 		beanshellVersion = '2.0b5'
 	}
+
+    apply plugin: 'net.researchgate.release'
+
+    release {
+        git {
+            requireBranch = ''
+        }
+    }
 }
 
 configure(subprojects - project(":spring-build-src")) { subproject ->
