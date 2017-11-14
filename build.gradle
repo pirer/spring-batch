@@ -102,6 +102,7 @@ allprojects {
     apply plugin: 'net.researchgate.release'
 
     release {
+        failOnSnapshotDependencies = false
         git {
             requireBranch = ''
         }
@@ -224,6 +225,7 @@ configure(subprojects - project(":spring-build-src")) { subproject ->
 		archives javadocJar
 	}
     release {
+        failOnSnapshotDependencies = false
         git {
             requireBranch = ''
         }
