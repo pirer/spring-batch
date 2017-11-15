@@ -59,6 +59,9 @@ public interface JobExecutionDao {
 	/**
 	 * Return all {@link JobExecution} for given {@link JobInstance}, sorted
 	 * backwards by creation order (so the first element is the most recent).
+	 * @param start the start index of the instances to return
+	 * @param count the maximum number of objects to return
+	 * @return Return all {@link JobExecution} for given {@link JobInstance
 	 */
 	List<JobExecution> findJobExecutions(JobInstance jobInstance, int start, int count);
 
