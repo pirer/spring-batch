@@ -17,6 +17,7 @@ package org.springframework.batch.core.explore;
 
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
+import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.launch.NoSuchJobException;
 import org.springframework.batch.item.ExecutionContext;
@@ -104,7 +105,7 @@ public interface JobExplorer {
 	 * @return the {@link JobExecution} values up to a maximum of count values
 	 *
 	 */
-	List<JobExecution> getJobExecutions(JobInstance jobInstance,int start, int count);
+	List<JobExecution> getJobExecutions(JobInstance jobInstance, int start, int count);
 
 
 	/**
@@ -147,5 +148,14 @@ public interface JobExplorer {
 	 * @throws NoSuchJobException
 	 */
 	int getJobInstanceCount(String jobName) throws NoSuchJobException;
+
+
+	/**
+	 * Return Last job execution
+	 *
+	 * @param jobInstance the {@link JobInstance} to query
+	 * @return the last execution of job if exists, null otherwise
+	 */
+	JobExecution getLastJobExecution(JobInstance jobInstance);
 
 }

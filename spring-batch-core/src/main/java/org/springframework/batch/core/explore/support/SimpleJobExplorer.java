@@ -18,6 +18,7 @@ package org.springframework.batch.core.explore.support;
 
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
+import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.NoSuchJobException;
@@ -203,10 +204,15 @@ public class SimpleJobExplorer implements JobExplorer {
 		return jobInstanceDao.getJobInstanceCount(jobName);
 	}
 
+	@Override
+	public JobExecution getLastJobExecution(JobInstance jobInstance) {
+		return jobExecutionDao.getLastJobExecution(jobInstance);
+	}
+
 	/*
-	 * Find all dependencies for a JobExecution, including JobInstance (which
-	 * requires JobParameters) plus StepExecutions
-	 */
+         * Find all dependencies for a JobExecution, including JobInstance (which
+         * requires JobParameters) plus StepExecutions
+         */
 	private void getJobExecutionDependencies(JobExecution jobExecution) {
 		JobInstance jobInstance = jobInstanceDao.getJobInstance(jobExecution);
 		stepExecutionDao.addStepExecutions(jobExecution);

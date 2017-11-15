@@ -145,6 +145,32 @@ public class SimpleJobExplorerTests {
 	}
 
 	@Test
+	public void testFindJobExecutionsPaging() throws Exception {
+		StepExecution stepExecution = jobExecution.createStepExecution("step");
+		when(jobExecutionDao.findJobExecutions(jobInstance)).thenReturn(
+				Collections.singletonList(jobExecution));
+		when(jobInstanceDao.getJobInstance(jobExecution)).thenReturn(
+				jobInstance);
+		stepExecutionDao.addStepExecutions(jobExecution);
+		when(ecDao.getExecutionContext(jobExecution)).thenReturn(null);
+		when(ecDao.getExecutionContext(stepExecution)).thenReturn(null);
+		jobExplorer.getJobExecutions(jobInstance,0,100);
+	}
+
+	@Test
+	public void testGetLastJobExecution() throws Exception {
+		StepExecution stepExecution = jobExecution.createStepExecution("step");
+		when(jobExecutionDao.findJobExecutions(jobInstance)).thenReturn(
+				Collections.singletonList(jobExecution));
+		when(jobInstanceDao.getJobInstance(jobExecution)).thenReturn(
+				jobInstance);
+		stepExecutionDao.addStepExecutions(jobExecution);
+		when(ecDao.getExecutionContext(jobExecution)).thenReturn(null);
+		when(ecDao.getExecutionContext(stepExecution)).thenReturn(null);
+		jobExplorer.getLastJobExecution(jobInstance);
+	}
+
+	@Test
 	public void testGetJobInstance() throws Exception {
 		jobInstanceDao.getJobInstance(111L);
 		jobExplorer.getJobInstance(111L);

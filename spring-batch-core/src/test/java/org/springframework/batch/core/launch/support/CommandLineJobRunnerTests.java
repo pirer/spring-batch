@@ -547,6 +547,15 @@ public class CommandLineJobRunnerTests {
 			}
 		}
 
+		@Override
+		public List<JobExecution> getJobExecutions(JobInstance jobInstance, int start, int count) {
+			return getJobExecutions(jobInstance);
+		}
+
+		@Override
+		public JobExecution getLastJobExecution(JobInstance jobInstance) {
+			return getJobExecution(jobInstance.getId());
+		}
 	}
 
 	public static class StubJobParametersConverter implements JobParametersConverter {
