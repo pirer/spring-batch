@@ -18,6 +18,7 @@ package org.springframework.batch.core.repository.dao;
 
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
+import org.springframework.batch.core.launch.NoSuchJobException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.util.Assert;
 import org.springframework.util.SerializationUtils;
@@ -85,6 +86,17 @@ public class MapJobExecutionDao implements JobExecutionDao {
 			}
 		});
 		return executions;
+	}
+
+	@Override
+	public int getJobExecutionCount(JobInstance jobInstance) throws NoSuchJobException {
+		int counter=0;
+		for (JobExecution exec : executionsById.values()) {
+			if (exec.getJobInstance().equals(jobInstance)) {
+				counter++;
+			}
+		}
+		return counter;
 	}
 
 	@Override

@@ -18,6 +18,7 @@ package org.springframework.batch.core.explore.support;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -200,5 +201,19 @@ public class SimpleJobExplorerTests {
 		when(jobInstanceDao.getJobInstanceCount("throwException")).thenThrow(new NoSuchJobException("expected"));
 
 		jobExplorer.getJobInstanceCount("throwException");
+	}
+
+	@Test
+	public void testGetJobExecutionCount() throws Exception {
+		when(jobExecutionDao.getJobExecutionCount(jobInstance)).thenReturn(4);
+
+		assertEquals(4, jobExplorer.getJobExecutionCount(jobInstance));
+	}
+
+	@Test(expected=NoSuchJobException.class)
+	public void testGetJobExecutionCountException() throws Exception {
+		when(jobExecutionDao.getJobExecutionCount(jobInstance)).thenThrow(new NoSuchJobException("expected"));
+
+		jobExplorer.getJobExecutionCount(jobInstance);
 	}
 }

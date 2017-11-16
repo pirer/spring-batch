@@ -158,4 +158,15 @@ public interface JobExplorer {
 	 */
 	JobExecution getLastJobExecution(JobInstance jobInstance);
 
+	/**
+	 * Query the repository for the number of unique {@link JobExecution}s
+	 * associated with the supplied {@link JobInstance}
+	 *
+	 * @param jobInstance job to query for
+	 * @return the number of {@link JobExecution}s that exist within the
+	 * associated job repository
+	 * @throws NoSuchJobException
+	 */
+	int getJobExecutionCount(JobInstance jobInstance) throws NoSuchJobException;
+
 }

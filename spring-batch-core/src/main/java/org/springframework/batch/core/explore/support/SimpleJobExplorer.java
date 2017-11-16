@@ -205,6 +205,11 @@ public class SimpleJobExplorer implements JobExplorer {
 	}
 
 	@Override
+	public int getJobExecutionCount(JobInstance jobInstance) throws NoSuchJobException {
+		return jobExecutionDao.getJobExecutionCount(jobInstance);
+	}
+
+	@Override
 	public JobExecution getLastJobExecution(JobInstance jobInstance) {
 		return jobExecutionDao.getLastJobExecution(jobInstance);
 	}

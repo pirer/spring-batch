@@ -49,6 +49,7 @@ import org.springframework.batch.core.step.JobRepositorySupport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.CollectionUtils;
 
 /**
  * @author Lucas Ward
@@ -545,6 +546,12 @@ public class CommandLineJobRunnerTests {
 			} else {
 				return count;
 			}
+		}
+
+		@Override
+		public int getJobExecutionCount(JobInstance jobInstance) throws NoSuchJobException {
+			List<JobExecution> jobExecutions = getJobExecutions(jobInstance);
+			return CollectionUtils.isEmpty(jobExecutions) ? 0 : jobExecutions.size();
 		}
 
 		@Override

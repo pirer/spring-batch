@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
+import org.springframework.batch.core.launch.NoSuchJobException;
 
 /**
  * Data Access Object for job executions.
@@ -93,4 +94,15 @@ public interface JobExecutionDao {
 	 */
 	void synchronizeStatus(JobExecution jobExecution);
 
+
+	/**
+	 * Query the repository for the number of unique {@link JobExecution}s
+	 * associated with the supplied {@link JobInstance}
+	 *
+	 * @param jobInstance job to query for
+	 * @return the number of {@link JobExecution}s that exist within the
+	 * associated job repository
+	 * @throws NoSuchJobException
+	 */
+	int getJobExecutionCount(JobInstance jobInstance) throws NoSuchJobException;
 }

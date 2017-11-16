@@ -33,6 +33,7 @@ import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameter.ParameterType;
 import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.launch.NoSuchJobException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -73,6 +74,8 @@ public class JdbcJobExecutionDao extends AbstractJdbcBatchMetadataDao implements
 
 	private static final String FIND_JOB_EXECUTIONS = "SELECT JOB_EXECUTION_ID, START_TIME, END_TIME, STATUS, EXIT_CODE, EXIT_MESSAGE, CREATE_TIME, LAST_UPDATED, VERSION, JOB_CONFIGURATION_LOCATION"
 			+ " from %PREFIX%JOB_EXECUTION where JOB_INSTANCE_ID = ? order by JOB_EXECUTION_ID desc";
+	private static final String COUNT_JOB_EXECUTIONS = "SELECT COUNT(*)"
+			+ " from %PREFIX%JOB_EXECUTION where JOB_INSTANCE_ID = ?";
 
 	private static final String GET_LAST_EXECUTION = "SELECT JOB_EXECUTION_ID, START_TIME, END_TIME, STATUS, EXIT_CODE, EXIT_MESSAGE, CREATE_TIME, LAST_UPDATED, VERSION, JOB_CONFIGURATION_LOCATION "
 			+ "from %PREFIX%JOB_EXECUTION E where JOB_INSTANCE_ID = ? and JOB_EXECUTION_ID in (SELECT max(JOB_EXECUTION_ID) from %PREFIX%JOB_EXECUTION E2 where E2.JOB_INSTANCE_ID = ?)";
@@ -127,6 +130,18 @@ public class JdbcJobExecutionDao extends AbstractJdbcBatchMetadataDao implements
 		Assert.notNull(job.getId(), "Job Id cannot be null.");
 
 		return getJdbcTemplate().query(getQuery(FIND_JOB_EXECUTIONS), new JobExecutionRowMapper(job), job.getId());
+	}
+
+	@Override
+	public int getJobExecutionCount(JobInstance jobInstance) throws NoSuchJobException {
+		try {
+			return getJdbcTemplate().queryForObject(
+					getQuery(COUNT_JOB_EXECUTIONS),
+					Integer.class,
+					jobInstance.getId());
+		} catch (EmptyResultDataAccessException e) {
+			throw new NoSuchJobException("No job execution were found for job instance " + jobInstance.getId());
+		}
 	}
 
 	@Override
